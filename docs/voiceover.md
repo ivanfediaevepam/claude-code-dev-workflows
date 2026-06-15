@@ -837,4 +837,436 @@ But first — the demo. Let me share my screen."
 
 ---
 
+---
+
+## DEMO BLOCK — Live Session (~40 min)
+
+> **Legend additions for the demo block**
+> ⌨️ Type this into Claude Code — copy-paste from `docs/demo-runbook.md`
+> 👀 Narrate while Claude is running (it takes 5–20 s)
+> 🖥️ Do this — browser, IDE, terminal action (not a prompt)
+> 😬 If it goes sideways — recovery line
+
+---
+
+### TRANSITION — from Slide 43 to screen share
+
+⏱️ 1:17:00
+
+🎤
+"Alright. Let me share my screen."
+
+*[Share screen. Show terminal with Claude Code running. Repo is on `demo/start`, working tree clean.]*
+
+🎤
+"Okay. This is the Shoreline app — a beach activity booking marketplace. Real Next.js codebase, real TypeScript, real Gemini API integration. I want to pretend I just joined this team five minutes ago. Which means I know nothing.
+
+That's the setup. Let's go."
+
+---
+
+### SEGMENT 1 — Discovery + Mermaid Diagrams
+
+⏱️ 1:17:30
+
+🎤
+"First thing I do on any unfamiliar repo: I ask Claude to walk me through it. Not 'summarize the README' — I want it to actually read the code."
+
+⌨️
+
+```text
+Explain this codebase to me starting from the entry point. What framework is it,
+what are the screens, and how does a booking get created end to end? Keep it to
+the key files.
+```
+
+👀 *(while Claude explores — ~10 s)*
+"Watch the tool calls. It's globbing the file tree, grepping for imports, reading layout files. This is the Slide 6 behavior — it doesn't wait for instructions, it explores. New engineer, first morning."
+
+*[Claude returns: Next.js 15 App Router, three screens, /api/chat with Gemini + fallback, localStorage for bookings]*
+
+🎤
+"Good. So it found Next.js 15 App Router. Three screens: listing, activity detail with the AI chat panel, bookings history. Booking flow goes through /api/chat to Gemini, then confirms in localStorage.
+
+Now I want a visual. Because 'I read it' and 'I can draw it' are different things."
+
+⌨️
+
+```text
+Create a Mermaid sequence diagram of the AI booking chat data flow: from the user
+typing in the chat panel, through /api/chat (Gemini vs the rule-based fallback),
+to the booking being confirmed and saved. Base it on the actual code.
+Save it to docs/architecture.md.
+```
+
+👀 *(while it generates — ~15 s)*
+"And this is the underused use case from the mind map slide — Discovery and Understanding. Sequence diagrams, service maps, data flow. Onboarding a new engineer used to take two days. This takes three prompts."
+
+*[Claude writes the sequence diagram to docs/architecture.md]*
+
+⌨️
+
+```text
+Now add a Mermaid diagram of the React component hierarchy — layout, three routes,
+and which components each screen composes. Append it to docs/architecture.md.
+```
+
+🖥️ *(open docs/architecture.md in IDE Markdown preview)*
+
+🎤
+"There it is. Two diagrams — data flow and component tree — generated from the actual code, saved to a file we can check in. That's a living architecture doc."
+
+*[Plant the hook:]*
+🎤
+"Quick — notice something. When it described the framework, it said Next.js 15 App Router. Hold that thought. Go open CLAUDE.md."
+
+---
+
+### SEGMENT 2 — Update Documentation
+
+⏱️ 1:22:30
+
+🖥️ *(open CLAUDE.md in the IDE — visible on screen)*
+
+🎤
+"Read the first line. 'Single server entry point — `server.ts` runs Express and serves both the API and the React SPA.' Vite middleware. `App.tsx` local state router.
+
+This project has none of those things. Not one. It was migrated to Next.js — look at the git log — and nobody updated the docs.
+
+This is Slide 5, pitfall number six: 'empty CLAUDE.md.' Except it's worse than empty. Empty is silent. Wrong is actively misleading. Every Claude session loads this file. Every session thinks it's working on an Express app."
+
+😄
+"So every time someone asked Claude to 'add a new API route,' it was about to create an Express router. In a Next.js project. That's a fun debugging session."
+
+🎤
+"Here's the fix. I have a slash command ready for exactly this."
+
+⌨️
+
+```text
+/update-docs 5
+```
+
+👀 *(while it audits — ~20 s)*
+"It's reading CLAUDE.md, checking the actual API routes in src/app/api, reading .env.example, checking package.json scripts. Triggered update, not scheduled — this is Slides 21 and 22. The workflow triggers the doc update, not a calendar reminder."
+
+*[Claude returns an audit table first: Area / Status / Issue / Priority]*
+
+🎤
+"Look at that table. Framework: incorrect, HIGH. Model name: incorrect, HIGH. Commands: missing npm test. README: boilerplate only, HIGH. It's showing us the audit before touching anything.
+
+That's the pattern from Slide 19 — actionable output. You can review a table like that in 60 seconds and know the priority order."
+
+*[Claude proceeds to update CLAUDE.md and README.md]*
+
+🖥️ *(show git diff CLAUDE.md in terminal)*
+
+🎤
+"Framework: Next.js 15 App Router. Routes: the four real API endpoints. Model: gemini-2.5-flash, not 3.5. Commands: dev, build, start, lint, test. README: actual install steps, actual env vars from .env.example.
+
+That's what CLAUDE.md should look like. Under 200 lines. Pointers only. Every token earns its place because every session loads it."
+
+---
+
+### SEGMENT 3 — Code Generation
+
+⏱️ 1:27:30
+
+🎤
+"Docs are accurate now. I know the codebase. Let's build something.
+
+There's a gap in the API — you can fetch a full activity with its slots, but there's no dedicated endpoint that returns *just* the availability. Let's add that."
+
+🖥️ *(briefly show src/app/api/activities/[id]/route.ts in IDE)*
+
+🎤
+"Here's the pattern I want to match. JSDoc header, NextResponse.json, same 404 shape, same params handling. I'm going to point Claude directly at this file.
+
+Slide 16 talks about 'golden example files.' This is one. 'Follow exactly this pattern' is worth more than two paragraphs of style guide."
+
+⌨️
+
+```text
+Generate a new API route: GET /api/activities/[id]/availability that returns just
+the bookable slots for an activity (id, date, time, spotsLeft, full) plus a
+`spotsTotal` sum. Follow EXACTLY the pattern in
+src/app/api/activities/[id]/route.ts — same params handling, same 404 shape, same
+JSDoc header style, NextResponse.json. Then show me how to verify it with curl.
+```
+
+👀 *(while it generates — ~15 s)*
+"Notice the prompt structure: goal, constraint, explicit reference to the golden file, a verification path — curl. Those four things. Slide 4."
+
+*[Claude creates the new route file + curl commands]*
+
+🎤
+"Look at the output — same JSDoc header structure, same 404 shape, same import path. It matched the convention because I gave it a concrete example to match, not an abstract description."
+
+🖥️ *(run: npx tsc --noEmit)*
+🎤
+"Type-check passes. The new route is valid TypeScript before I've even run the dev server."
+
+😄
+"If we had time, I'd convert this prompt into a `.claude/skills/` entry so it fires automatically whenever Claude detects we're adding an endpoint. That's Slides 11 and 12. Take 10 minutes after the session."
+
+---
+
+### SEGMENT 4 — Bug Fix
+
+⏱️ 1:32:30
+
+🎤
+"Alright. There's a bug in this codebase. A real one, not planted — I found it in the code. Let me show you."
+
+🖥️ *(in browser: go to an activity, click the June 13 slot, confirm the booking)*
+
+🎤
+"Watch the chat bubble. I just confirmed a booking for June 13."
+
+*[Success message appears: "Your reservation for June 12 was successfully registered..."]*
+
+😄
+"June 12. I booked June 13. Classic hardcoded string. Line 178 of DetailView.tsx — there's a template literal with the date hardcoded as 'June 12' instead of using `newBooking.date`. The bug has been there since the component was written."
+
+🎤
+"Now — the wrong way to report this bug is 'the date is wrong.' The right way is what's on Slide 32."
+
+⌨️
+
+```text
+Bug: after confirming a booking, the success message always says "June 12" even when
+the guest booked June 13.
+- Symptom: chat success bubble shows the wrong date.
+- Affected file: src/components/DetailView.tsx, executeConfirmBooking (~line 178).
+- Repro: open an activity, pick a June 13 slot, confirm, read the success message.
+First write a failing test that proves the bug (the success message should contain the
+booked date), confirm it fails, then fix it, then show the test passing.
+```
+
+👀 *(while Claude reads the file — ~10 s)*
+"Environment, symptom, exact file, repro steps. And — the key thing — I asked it to write a failing test first. Research from Slide 32: giving Claude a failing test to make green fixes 30% more bugs in 50% fewer steps. You're defining the bug in executable form."
+
+*[Claude writes the test — it calls executeConfirmBooking with a June 13 booking and asserts the message contains "June 13"]*
+
+🖥️ *(run: npm test)*
+
+*[Test fails: expected "June 12" to include "June 13"]*
+
+🎤
+"The test fails. That's correct — we want it to fail. It proves the bug exists and defines exactly what 'fixed' means."
+
+*[Claude fixes the bug — replaces the literal string with `${newBooking.date}`]*
+
+🖥️ *(run: npm test)*
+
+*[All tests pass]*
+
+🎤
+"One line. `${newBooking.date}` instead of the hardcoded string. Test is green. And now we have a regression guard — this bug cannot come back without breaking that test."
+
+---
+
+### SEGMENT 5 — Test Generation
+
+⏱️ 1:38:30
+
+🎤
+"We just fixed a bug and gave it a test. But that test was narrow — it only covers that one success message. What's the overall coverage picture?"
+
+⌨️
+
+```text
+Run `npm run test:coverage` and identify the most important untested code paths.
+Focus on business logic: the useBookings hook (add, cancel, localStorage persistence,
+the corrupt-JSON fallback) and the rule-based booking parser in the /api/chat fallback
+(edge cases: FULL slot, group size over maxGroupSize, no date, plural vs singular guest).
+For each gap: explain why it matters, then write tests that MATCH the style of
+src/lib/__tests__/pricing.test.ts. Verify they pass.
+```
+
+👀 *(while it runs coverage — ~15 s)*
+"Two things I did there: I listed the edge cases explicitly — FULL slot, over capacity, corrupt JSON — and I pointed at an existing test file as the style reference. Slide 28 is emphatic about both. Without explicit edge cases, Claude over-tests the happy path. Without a style reference, you get textbook tests with excessive mocking that break on every refactor."
+
+*[Claude returns coverage report — useBookings: 0%, chat parser: 0%]*
+
+🎤
+"Zero. Both of them. These are the highest-risk files in the app — the hook that touches localStorage, the parser that handles all the booking intent logic. And they have no tests at all.
+
+Slide 27: highest ROI AI use case, lowest adoption."
+
+*[Claude generates tests for useBookings and the parser, mirroring the pricing test style]*
+
+🖥️ *(run: npm test)*
+
+*[All tests pass — new suite shows up]*
+
+🎤
+"Look at the test names — they match the `describe / it` structure of the golden test. That's because I gave it a concrete example. That's the pattern. Use what already exists."
+
+---
+
+### SEGMENT 6 — Refactoring
+
+⏱️ 1:43:30
+
+🎤
+"Now. We have tests. Which means — *now* — we can refactor safely.
+
+There's a structural problem in this codebase that I noticed during discovery. The rule-based booking parser — the fallback when the Gemini API is down — exists in two places. Server side, in api/chat/route.ts. Client side, in DetailView.tsx. Two copies. Slightly different behavior. Neither of them tested in isolation.
+
+That's the coupling problem from Slide 24. And the reason I didn't refactor this first — before Segment 5 — is that you don't refactor code you can't verify. Now we can verify."
+
+🎤
+"I'm going to enter Plan Mode before touching anything."
+
+🖥️ *(press Shift+Tab — show Plan Mode indicator)*
+
+🎤
+"Plan Mode. Claude will read the codebase, think through the problem, and produce a plan. It will not write code. That's the rule.
+
+And notice the prompt — I'm describing the *problem*, not the solution."
+
+⌨️
+
+```text
+Goal: single source of truth for the rule-based booking parser. Current problem: the
+"parse a date/time/people from a guest message" logic is duplicated in
+src/app/api/chat/route.ts (server fallback) and src/components/DetailView.tsx (client
+fallback), and the two versions disagree. This makes them impossible to test once and
+keep in sync. Don't change code yet — present 2–3 approaches with trade-offs.
+```
+
+👀 *(while it reads and plans — ~20 s)*
+"'Reduce the coupling.' Not 'extract a function.' Not 'create an interface.' The goal and the problem — Claude figures out the approach. Slide 24."
+
+*[Claude returns 2-3 options with trade-offs — e.g.: shared lib in src/lib, server-side only fallback, inline deduplication]*
+
+🎤
+"Look at this. It's giving me options. Shared library, server-only consolidation, inline dedup. Each with trade-offs.
+
+This is the conversation you want to have at planning time, not after you've got a 400-line diff to review. Slide 15."
+
+🎤
+"Option 1 — shared lib. That's the right call here. Let's go."
+
+🖥️ *(press Shift+Tab again — exit Plan Mode)*
+
+⌨️
+
+```text
+Implement option 1 incrementally: extract a pure parseBookingIntent() into
+src/lib/bookingParser.ts, point both call sites at it, and run `npm test` after
+each step. Keep behaviour unchanged.
+```
+
+👀 *(while it extracts and refactors — ~30 s)*
+"Incremental. Tested between each step. That's Slide 25 — seven steps for refactoring. We're on steps five and six right now."
+
+*[Claude extracts the function, rewires both call sites, runs tests between steps — all green]*
+
+🖥️ *(run: npm test)*
+
+🎤
+"Green. The tests we wrote in Segment 5 — they're now covering the extracted function. We didn't write new tests. The existing tests proved correctness through the refactor.
+
+That's the feedback loop from Slide 42. Tests fail after refactor? Loop back. Tests pass? Move forward."
+
+---
+
+### SEGMENT 7 — Git & Pull Request
+
+⏱️ 1:50:30
+
+🎤
+"Last step. And this is the one that closes the loop.
+
+We've done a session's worth of work. Discovery, docs fix, new endpoint, bug fix, tests, refactor. Now I want that history to tell a clean story."
+
+⌨️
+
+```text
+Review my changes and propose a series of Conventional Commits — one logical change
+each (docs, the new endpoint, the bug fix, the tests, the refactor). Subject under
+72 chars, body explains WHY. Don't commit yet — show me the messages first.
+```
+
+👀 *(while it drafts — ~10 s)*
+"'Show me first.' Every Git operation. That's on the slide and it's the habit. Review before commit, review before push."
+
+*[Claude proposes 5 commits: docs: fix stale CLAUDE.md and README / feat: add /api/activities/[id]/availability route / fix: use booked date in booking success message / test: add coverage for useBookings and chat parser / refactor: extract parseBookingIntent into shared lib]*
+
+🎤
+"Five commits. Docs, feature, bug fix, tests, refactor. That's our entire session, in five conventional commits. That's a story you can read in `git log`.
+
+Commit convention is defined in CLAUDE.md now — the updated one — so Claude knows the format. Slide 40."
+
+*[Review the messages, approve, let Claude commit]*
+
+⌨️
+
+```text
+Create a PR description with sections: Summary, What changed (grouped by type),
+How to test it, Screens affected. Derive everything from the commits and diff.
+Then create the PR with `gh pr create`.
+```
+
+*[Claude generates the PR body and runs gh pr create]*
+
+🎤
+"There's the PR. Summary, change log grouped by docs / feat / fix / test / refactor, manual test steps.
+
+Generated from the diff. Not written from scratch."
+
+---
+
+### CLOSE — Back to Slide 42
+
+⏱️ 1:54:00
+
+🖥️ *(switch back to the deck — Slide 42, the workflow chaining diagram)*
+
+🎤
+"This. This is what we just did.
+
+Discovery → Docs → Code Gen → Bug Fix → Test Generation → Refactor → PR.
+
+One session. One story. Started from 'I just joined this team' and ended at a PR with five clean commits and a generated description.
+
+Not every session looks like this — sometimes it's just a bug fix, sometimes it's just tests. But the point is: *these workflows compose*. Each one feeds the next. Tests made refactoring safe. Docs made code gen accurate. The bug repro test became a regression guard.
+
+That's the target state. Not 'I use Claude Code for this one thing.' The whole loop."
+
+❓
+"Quick — what's the first workflow you're going to try this week? Not the whole pipeline. Just one. Drop it in chat."
+
+*[Read a few responses.]*
+
+🎤
+"Perfect. Start with that one. Get comfortable. Then add another. That's exactly what Slide 41 says — increment.
+
+Questions?"
+
+*[Take questions for the remaining time.]*
+
+---
+
+## QUICK REFERENCE — Demo Interaction Points
+
+| Segment | Type | Purpose |
+|---|---|---|
+| Transition | 🖥️ Share screen | Establish the narrative: "I just joined this team" |
+| Discovery | 👀 Narrate tool calls | Show multi-file exploration live (Slide 6) |
+| Discovery → Docs | 🎤 Plant the hook | "It said Next.js. Go open CLAUDE.md." |
+| Docs reveal | 🖥️ Open CLAUDE.md | The "aha" moment — wrong framework, live on screen |
+| Docs audit table | 🎤 Read it aloud | HOT tier, triggered updates, AI documents *what* not *why* |
+| Code gen | 🖥️ Show golden file | "This is the pattern Claude will match" |
+| Bug fix | 🖥️ Show browser | Book June 13, see "June 12" — audience sees it themselves |
+| Bug fix | 🎤 Failing test first | "Define the bug in executable form" (Slide 32) |
+| Test gen | 👀 Coverage gaps | "Zero. Both of them." — land the ROI point (Slide 27) |
+| Refactor | 🖥️ Shift+Tab | Plan Mode — the most important habit (Slide 13) |
+| Git | 🎤 "Show me first" | Review before commit — every time (Slide 39) |
+| Close | 🖥️ Back to Slide 42 | Land the pipeline diagram on real work we just did |
+
+---
+
 *End of voiceover script.*
