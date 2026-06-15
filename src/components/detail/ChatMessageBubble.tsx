@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { ChatMessage } from "../../types";
+import { ChatMessage } from "@/types";
 import { Bot } from "lucide-react";
 
 interface ChatMessageBubbleProps {

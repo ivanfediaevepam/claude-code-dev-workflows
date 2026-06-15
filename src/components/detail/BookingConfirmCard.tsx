@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { BookingAttempt } from "../../types";
+import { BookingAttempt } from "@/types";
 import { Sparkles, Check } from "lucide-react";
 import { motion } from "motion/react";
 

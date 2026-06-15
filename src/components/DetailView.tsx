@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import { Activity, Booking, ChatMessage, BookingAttempt } from "../types";
+import { Activity, Booking, ChatMessage, BookingAttempt } from "@/types";
 import { ArrowLeft, Heart, Star } from "lucide-react";
 import ActivitySpecs from "./detail/ActivitySpecs";
 import AvailabilitySlots from "./detail/AvailabilitySlots";

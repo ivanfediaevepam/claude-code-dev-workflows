@@ -1,3 +1,6 @@
+/** Lightweight shape returned by GET /api/activities (list). No slot details. */
+export type ActivitySummary = Omit<Activity, 'slots'>;
+
 export interface Activity {
   id: string;
   title: string;

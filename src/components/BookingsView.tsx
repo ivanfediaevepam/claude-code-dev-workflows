@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Booking } from "../types";
+import { Booking } from "@/types";
 import { AnimatePresence } from "motion/react";
 import BookingCard from "./bookings/BookingCard";
 import EmptyBookingsState from "./bookings/EmptyBookingsState";

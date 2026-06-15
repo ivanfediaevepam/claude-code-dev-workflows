@@ -1,11 +1,13 @@
+"use client";
+
 import React from "react";
-import { Activity } from "../../types";
+import { ActivitySummary } from "@/types";
 import { Clock, ArrowRight, Star } from "lucide-react";
 import { motion } from "motion/react";
 
 interface ActivityCardProps {
   key?: React.Key;
-  activity: Activity;
+  activity: ActivitySummary;
   idx: number;
   onSelect: (id: string) => void;
 }

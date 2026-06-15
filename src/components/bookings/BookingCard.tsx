@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
-import { Booking } from "../../types";
+import { Booking } from "@/types";
 import { Calendar, Users, Sparkles, X, Check, Eye } from "lucide-react";
 import { motion } from "motion/react";
 

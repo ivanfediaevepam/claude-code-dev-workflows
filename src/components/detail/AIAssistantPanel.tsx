@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { ChatMessage, BookingAttempt } from "../../types";
+import { ChatMessage, BookingAttempt } from "@/types";
 import { Bot, Loader2, Send } from "lucide-react";
 import ChatMessageBubble from "./ChatMessageBubble";
 import BookingConfirmCard from "./BookingConfirmCard";
