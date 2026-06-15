@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Geist', sans-serif;
+  --font-display: 'Geist', sans-serif;
+
+  /* Custom Color Palette based on design system guidelines */
+  --color-primary: #00694c;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #008560;
+  --color-on-primary-container: #f5fff7;
+  --color-inverse-primary: #68dbae;
+  
+  --color-secondary: #50625d;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d3e7e0;
+  --color-on-secondary-container: #566863;
+  
+  --color-tertiary: #993f3a;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #b85751;
+  --color-on-tertiary-container: #fffbff;
+  
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  
+  --color-background: #f3fbf7;
+  --color-on-background: #151d1b;
+  
+  /* Surface Layers */
+  --color-surface: #f3fbf7;
+  --color-surface-dim: #d3dcd8;
+  --color-surface-bright: #f3fbf7;
+  --color-surface-variant: #dce4e1;
+  --color-on-surface: #151d1b;
+  --color-on-surface-variant: #3d4943;
+  --color-inverse-surface: #2a3230;
+  --color-inverse-on-surface: #eaf3ef;
+  
+  /* Outline and Borders */
+  --color-outline: #6d7a73;
+  --color-outline-variant: #bccac1;
+  --color-surface-tint: #006c4e;
+  
+  /* Fixed Levels */
+  --color-primary-fixed: #86f8c9;
+  --color-primary-fixed-dim: #68dbae;
+  --color-on-primary-fixed: #002115;
+  --color-on-primary-fixed-variant: #00513a;
+  
+  --color-secondary-fixed: #d3e7e0;
+  --color-secondary-fixed-dim: #b7cbc4;
+  --color-on-secondary-fixed: #0d1f1b;
+  --color-on-secondary-fixed-variant: #394a45;
+  
+  --color-tertiary-fixed: #ffdad6;
+  --color-tertiary-fixed-dim: #ffb3ad;
+  --color-on-tertiary-fixed: #410003;
+  --color-on-tertiary-fixed-variant: #7e2a27;
+
+  /* Surface Container Levels */
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #edf6f2;
+  --color-surface-container: #e7f0ec;
+  --color-surface-container-high: #e1eae6;
+  --color-surface-container-highest: #dce4e1;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container-low);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+/* Glassmorphism Vibe */
+.glass-backdrop {
+  backdrop-filter: blur(16px);
+  background-color: rgba(225, 245, 238, 0.85);
+}
+
+/* Level 2 Ambient Shadow with Primary Teal Tint */
+.ambient-shadow {
+  box-shadow: 0px 4px 20px rgba(29, 158, 117, 0.06);
+}
+
+/* Floating Animation */
+@keyframes subtleFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+.ai-float {
+  animation: subtleFloat 5s ease-in-out infinite;
+}
