@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Activity, Booking, ChatMessage, BookingAttempt } from "@/types";
+import { calculateTotalPrice } from "@/lib/pricing";
 import { ArrowLeft, Heart, Star } from "lucide-react";
 import ActivitySpecs from "./detail/ActivitySpecs";
 import AvailabilitySlots from "./detail/AvailabilitySlots";
@@ -158,7 +159,7 @@ export default function DetailView({ activity, onGoBack, onAddBooking }: DetailV
       date: bookingAttempt.date,
       time: bookingAttempt.time,
       peopleCount: bookingAttempt.people,
-      totalPrice: activity.price * bookingAttempt.people,
+      totalPrice: calculateTotalPrice(activity.price, bookingAttempt.people),
       status: "Confirmed",
       preparationGuide: activity.id === "beginner-surf" 
         ? "Arrive 15 minutes early at the North Beach hut. Bring sunscreen and a towel!" 

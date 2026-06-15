@@ -2,6 +2,7 @@
 
 import React from "react";
 import { BookingAttempt } from "@/types";
+import { calculateTotalPrice, formatGuestLabel } from "@/lib/pricing";
 import { Sparkles, Check } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -41,11 +42,11 @@ export default function BookingConfirmCard({
         </p>
         <p className="flex justify-between gap-4">
           <span>Guests Count:</span>
-          <strong className="text-[#151d1b] text-right">{bookingAttempt.people} {bookingAttempt.people === 1 ? 'Guest' : 'Guests'}</strong>
+          <strong className="text-[#151d1b] text-right">{formatGuestLabel(bookingAttempt.people)}</strong>
         </p>
         <p className="flex justify-between border-t border-[#e1eae6] pt-1.5 mt-1 font-bold text-[#00694c]">
           <span>Total Price:</span>
-          <span className="text-sm">€{activityPrice * bookingAttempt.people}</span>
+          <span className="text-sm">€{calculateTotalPrice(activityPrice, bookingAttempt.people)}</span>
         </p>
       </div>
 
