@@ -56,6 +56,7 @@ returns you to `demo/start`). See [scripts/demo-reset.sh](../scripts/demo-reset.
 - ✅ A **golden** reference unit + test: `src/lib/pricing.ts` + `src/lib/__tests__/pricing.test.ts`
 - ✅ `.claude/settings.json` — a curated `allow` list so safe commands don't prompt mid-demo (Slide 5 fix)
 - ✅ `.claude/commands/update-docs.md` — the `/update-docs` slash command (Slides 18 & 22)
+- ✅ The `new-api-route` **skill is built live** in Segment 3 (intentionally *not* pre-installed); the finished, validated copy is at [docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) as a fallback
 - ✅ Seeded demo material left intentionally in place (see [§11 Seed map](#11-seed-map))
 
 **Two house rules to repeat all session (Slide 4 + Slide 5):**
@@ -178,12 +179,21 @@ API routes and model name in CLAUDE.md for now."* Answer‑key skeleton in [§10
 
 ---
 
-## Segment 3 — Code Generation
+## Segment 3 — Code Generation + Build a Skill
 
 - 🎞 **Slides:** 10–16 (boilerplate to conventions, Skills, Plan Mode, readiness checklist)
-- ⏱ **Budget:** 5 min
-- 🎯 **Target:** new file `src/app/api/activities/[id]/availability/route.ts`, following the
-  **golden pattern** in [src/app/api/activities/[id]/route.ts](../src/app/api/activities/%5Bid%5D/route.ts)
+- ⏱ **Budget:** 9 min (5 for the route, ~4 for the live skill build + reuse)
+- 🎯 **Targets:** (1) `src/app/api/activities/[id]/availability/route.ts` following the
+  **golden pattern** in [src/app/api/activities/[id]/route.ts](../src/app/api/activities/%5Bid%5D/route.ts);
+  (2) a new skill at `.claude/skills/new-api-route/SKILL.md`, built live; (3) a second
+  route generated *by* the skill.
+
+> **This is the Skills payoff (Slide 11).** demo/start ships **without** the skill, so the
+> build is genuine. The finished, validated SKILL.md is committed as a reference/fallback at
+> [docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) and reproduced
+> in [§13 Appendix B](#13-appendix-b--new-api-route-skill-answer-key).
+
+### Step 1 — generate the first route by hand (pattern-matching)
 
 💬 **Prompt:**
 ```
@@ -194,25 +204,58 @@ src/app/api/activities/[id]/route.ts — same params handling, same 404 shape, s
 JSDoc header style, NextResponse.json. Then show me how to verify it with curl.
 ```
 
-✅ **Expected:** a new route file that mirrors the existing one's structure and JSDoc;
-reuses `ACTIVITIES` and the `params: Promise<{id}>` pattern; returns the documented shape.
-
-🔍 **Verify:**
+✅ **Expected:** a route file mirroring the golden one's JSDoc + `params: Promise<{id}>` +
+404 shape. 🔍 **Verify:**
 ```bash
 npx tsc --noEmit
 curl -s localhost:3000/api/activities/beginner-surf/availability | head
 curl -s -o /dev/null -w "%{http_code}\n" localhost:3000/api/activities/nope/availability   # 404
 ```
 
-🗣 **Talking points:**
-- "Code generation = generating to **established conventions**. Strong consistent patterns in → consistent output out." (Slide 10)
-- Point at the two existing JSDoc'd routes: *"these are my golden examples — 'follow this' beats two paragraphs of prose."* (Slide 16)
-- **Upgrade to a Skill** (Slide 11–12): *"if I scaffold endpoints often, I'd wrap this prompt as `.claude/skills/new-api-route/SKILL.md` so Claude offers it automatically."* (Optional live build if time allows.)
-- For a non‑trivial feature you'd enter **Plan Mode** first (Shift+Tab). (Slide 13)
+### Step 2 — capture it as a skill (live: "what one looks like + how to build it")
 
-⚠️ **Fallback (visual alternative):** if you'd rather show something in the browser,
-generate a new **detail sub‑component** (e.g. a `CancellationPolicy` card) following the
-`src/components/detail/*` pattern and drop it into `DetailView`.
+💬 **Prompt:**
+```
+Turn what you just did into a reusable skill at .claude/skills/new-api-route/SKILL.md.
+The description must make Claude reach for it automatically whenever I ask to add an
+API route — so be specific about when it applies. Capture the conventions you just
+followed: JSDoc header documenting the response shapes, typed Promise params,
+NextResponse.json, the { error } 404 shape, modeled on the activities routes. End
+with a tsc + curl verification checklist.
+```
+
+✅ **Expected:** a `SKILL.md` with YAML frontmatter (`name` + a specific `description`
+trigger) and a recipe body. 🖥️ Open it and narrate the two parts: **description = the
+auto-fire trigger**, **body = the recipe**.
+
+### Step 3 — reuse it (live: skill auto-fires, no instructions)
+
+💬 **Prompt** — deliberately says nothing about patterns or golden files:
+```
+Add a GET /api/activities/[id]/reviews endpoint that returns the activity's rating,
+reviewsCount, and tags.
+```
+
+✅ **Expected:** Claude loads `new-api-route` on its own and produces a route with the
+same JSDoc/params/404 conventions. 🔍 **Verify:** `npx tsc --noEmit` + curl.
+
+🗣 **Talking points:**
+
+- "Code generation = generating to **established conventions**." (Slide 10)
+- The two existing JSDoc'd routes are the **golden examples** — "follow this" beats prose. (Slide 16)
+- A skill is **frontmatter (the trigger) + body (the recipe)** — a reusable prompt that lives in the repo and ships to the team. (Slide 11)
+- The lesson: **skill = automatic** (Claude fired it from the description), **slash command = explicit** (you typed `/update-docs`). Control vs consistency. (Slide 11)
+
+⚠️ **Fallback:** if the live build or auto-fire misbehaves, copy the reference skill into
+place and continue:
+
+```bash
+mkdir -p .claude/skills/new-api-route
+cp docs/demo-assets/new-api-route.SKILL.md .claude/skills/new-api-route/SKILL.md
+```
+
+If you'd rather show something visual instead of the second endpoint, generate a
+`CancellationPolicy` card following the `src/components/detail/*` pattern.
 
 ---
 
@@ -492,6 +535,12 @@ flowchart TD
 **Not seeds (real, leave alone):** `src/lib/pricing.ts` + its test are the *golden*
 reference; `.claude/` config and Jest setup are real pre‑staging.
 
+**Built live, not seeded:** the `new-api-route` skill is created on stage in Segment 3,
+so `.claude/skills/` is empty on `demo/start`. The finished copy lives at
+[docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) (also in
+[§13](#13-appendix-b--new-api-route-skill-answer-key)). `demo-reset.sh` removes the
+live‑built skill since it's untracked.
+
 ---
 
 ## 12. Reset & recovery
@@ -504,3 +553,42 @@ git restore --staged . && git checkout -- . && git switch demo/start
 
 If you accidentally close the terminal mid‑session: `claude --continue` resumes where
 you left off (Slide 7).
+
+---
+
+## 13. Appendix B — `new-api-route` skill (answer key)
+
+This is the finished skill the presenter builds live in Segment 3 — committed at
+[docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) as the
+reference and paste‑in fallback. In the live build, Claude should produce something
+very close to this.
+
+````markdown
+---
+name: new-api-route
+description: >-
+  Scaffold a new Next.js App Router API route under src/app/api. Use this
+  whenever the user asks to add, create, generate, or build an API
+  endpoint/route in this project. Produces a route handler that matches the
+  codebase conventions — a JSDoc header documenting the response shapes, typed
+  dynamic params (Promise<{ ... }>), NextResponse.json responses, and the
+  consistent { error } 404 shape — modeled on
+  src/app/api/activities/[id]/route.ts.
+---
+
+# New API Route
+
+Generate a Next.js App Router route handler indistinguishable in style from the
+existing routes. Match the golden examples — do not invent a new structure.
+
+- Golden examples: src/app/api/activities/[id]/route.ts (single + 404),
+  src/app/api/activities/route.ts (collection + query filter)
+- Conventions: file at src/app/api/<segments>/route.ts; import NextRequest,
+  NextResponse + data from @/data/activities; JSDoc header; await
+  context.params (typed as a Promise); NextResponse.json with { data } /
+  { data, total }; 404 as { error } + { status: 404 }; no new deps.
+- After generating: npx tsc --noEmit, then a happy-path and a 404 curl.
+````
+
+> The two parts to point at on stage: the **`description`** (the auto-fire trigger Claude
+> matches against) and the **body** (the recipe). That's the whole anatomy of a skill.

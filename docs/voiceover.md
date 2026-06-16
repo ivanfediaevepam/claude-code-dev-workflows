@@ -283,7 +283,7 @@ For our TypeScript project: an endpoint generation skill would list exact patter
 *[Brief pause.]*
 
 🎤
-"By the end of today you'll have seen what one looks like and how to build it."
+"In the code-generation demo in a few minutes, we'll build one together — live. You'll see exactly what a SKILL.md looks like, and you'll watch Claude pick it up on its own, without me invoking it."
 
 →
 
@@ -333,9 +333,10 @@ Readiness checklist. The two that matter most: golden example files — concrete
 
 ---
 
-## PART 2 → DEMO: Code Generation (~5 min)
+## PART 2 → DEMO: Code Generation + Build a Skill (~9 min)
 
 ⏱️ 31:00
+> *Building the skill live adds ~4 min; timestamps after this point shift by roughly that much.*
 
 🎤
 "Docs are accurate now — we'll get to that. Let me show you code generation.
@@ -370,9 +371,54 @@ JSDoc header style, NextResponse.json. Then show me how to verify it with curl.
 🎤
 "Type-check passes. Valid TypeScript before we've even run the dev server.
 
-The next step — in a real project — would be wrapping this prompt as a `.claude/skills/` entry so it fires automatically. Slides 11 and 12. Take 10 minutes after this session."
+But here's the thing — I just spelled out those conventions by hand. JSDoc, params, 404 shape. I do not want to type that paragraph every time I add a route. So let me capture it. This is the skill moment from Slides 11 and 12 — live."
+
+⌨️
+
+```text
+Turn what you just did into a reusable skill at .claude/skills/new-api-route/SKILL.md.
+The description must make Claude reach for it automatically whenever I ask to add an
+API route — so be specific about when it applies. Capture the conventions you just
+followed: JSDoc header documenting the response shapes, typed Promise params,
+NextResponse.json, the { error } 404 shape, modeled on the activities routes. End
+with a tsc + curl verification checklist.
+```
+
+👀 *(~15 s)*
+"It's writing a SKILL.md. Watch the structure when it finishes."
+
+🖥️ *Open `.claude/skills/new-api-route/SKILL.md` in the IDE.*
+
+🎤
+"This is what a skill looks like. Two parts. The frontmatter `description` at the top — that's the trigger. Claude reads that and decides, on its own, when this skill applies. And the body — that's the recipe: read the golden file, match the JSDoc, the params, the 404 shape, then verify.
+
+That's the whole thing. A reusable, structured prompt that lives in the repo and gets shared with the team.
+
+Now — the payoff. I'm going to ask for another endpoint. And notice: I'm not going to mention conventions, or golden files, or 'follow the pattern.' Nothing. Just the feature."
+
+⌨️
+
+```text
+Add a GET /api/activities/[id]/reviews endpoint that returns the activity's rating,
+reviewsCount, and tags.
+```
+
+👀 *(~15 s)*
+"Watch the top of the response — it's loading the new-api-route skill. I didn't ask it to. It recognized the task from the description and reached for the skill automatically."
+
+*[Claude applies the skill — generates the reviews route with matching JSDoc, params, and 404 shape.]*
+
+🎤
+"Same conventions. Zero instructions from me. *That's* the difference between a skill and a slash command. `/update-docs` — I had to type the slash and run it. This skill — Claude fired it on its own because the description matched.
+
+Explicit when you want control. Automatic when you want consistency. Slide 11."
 
 → *Back to slides.*
+
+> **Presenter note:** demo/start ships *without* this skill so the build is real.
+> If the live build or auto-fire misbehaves, the finished SKILL.md is in
+> `docs/demo-assets/new-api-route.SKILL.md` — copy it into
+> `.claude/skills/new-api-route/SKILL.md` and continue. Full steps in the runbook.
 
 ---
 
@@ -888,6 +934,8 @@ Today was the foundation. Questions?"
 | Docs | 🖥️ Open CLAUDE.md | Audience reads the wrong framework themselves |
 | Docs audit table | 🎤 Read it aloud | HOT tier, triggered updates, AI documents *what* not *why* |
 | Code gen | 🖥️ Show golden file | "This is the pattern Claude will match" |
+| Code gen | 🖥️ Build skill live → open SKILL.md | "What a skill looks like + how to build it" (Slide 11) |
+| Code gen | 👀 Second endpoint auto-fires skill | Skill (auto) vs `/update-docs` (explicit) |
 | Bug fix | 🖥️ Show browser | Book June 13, see "June 12" — audience catches it |
 | Bug fix | 🎤 Failing test first | "Define the bug in executable form" (Slide 32) |
 | Test gen | 👀 Coverage gaps | "Zero. Both of them." — land the ROI point (Slide 27) |
