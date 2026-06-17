@@ -20,10 +20,6 @@ Each segment has the same shape:
 | ⏱ **Budget** | Rough time on stage |
 | 🎯 **Target** | The exact file/line in this repo you'll act on |
 | 💬 **Prompt** | Copy‑paste prompt(s) — written to the deck's "strong prompt" pattern |
-| ✅ **Expected** | What Claude should do, so you can narrate confidently |
-| 🔍 **Verify** | The feedback loop — how you (and Claude) prove it worked |
-| 🗣 **Talking points** | The principle to say out loud while it runs |
-| ⚠️ **Fallback** | What to do if the live model goes off‑script |
 
 **The spine of the demo is one story:** you "join" the Shoreline project, discover its
 docs are stale, fix them, build a small feature, fix a real bug, back it with tests,
@@ -119,20 +115,6 @@ Now add a Mermaid diagram of the React component hierarchy: the layout, the thre
 routes, and the components each screen composes. Append it to docs/architecture.md.
 ```
 
-✅ **Expected:** Claude greps the tree, identifies **Next.js 15 App Router** (not what
-CLAUDE.md claims!), and produces two diagrams close to the reference in
-[§10 Appendix A](#10-appendix-a--reference-diagrams-answer-key).
-
-🔍 **Verify:** open `docs/architecture.md` in the IDE's Markdown preview — Mermaid renders.
-
-🗣 **Talking points:**
-- "Claude doesn't wait for instructions — it *explores*: glob, grep, sub‑agents." (Slide 6)
-- "Onboarding to an unfamiliar repo is one of the most underused wins." (Slide 9)
-- Plant the hook for Segment 2: *"Notice it said Next.js. Hold that thought — go read CLAUDE.md."*
-
-⚠️ **Fallback:** if a diagram has a syntax error, paste the error back — fixing its own
-Mermaid is a 5‑second loop. Reference diagrams are in [§10](#10-appendix-a--reference-diagrams-answer-key).
-
 ---
 
 ## Segment 2 — Update Documentation
@@ -160,23 +142,6 @@ the real API routes under src/app/api, and the model name. Generate a real READM
 endpoints, dev workflow). Base everything on the code, not assumptions. Show me an
 audit table and the diffs before writing.
 ```
-
-✅ **Expected:** an audit table (`Area | Status | Issue | Priority`), then corrected
-`CLAUDE.md` (Next.js, real routes incl. `/api/activities` and `/api/activities/[id]`,
-`gemini-2.5-flash`, `npm test`) and a real `README.md`.
-
-🔍 **Verify:** `git diff CLAUDE.md README.md` — read it together; confirm claims now
-match `src/app/`.
-
-🗣 **Talking points:**
-- "Stale docs are worse than no docs — they actively mislead Claude." (Slide 17)
-- HOT/WARM/COLD tiers: CLAUDE.md is HOT, pointers only, under ~200 lines. (Slide 20)
-- "Agents don't update docs unprompted — you *build it into the workflow.*" `/update-docs` is that trigger. (Slides 21–22)
-- AI documents *what*, not *why* — business rationale stays human. (Slide 23)
-
-⚠️ **Fallback:** if it rewrites too much, narrow it: *"Only fix the framework, commands,
-API routes and model name in CLAUDE.md for now."* Answer‑key skeleton in [§10](#10-appendix-a--reference-diagrams-answer-key).
-
 ---
 
 ## Segment 3 — Code Generation + Build a Skill
@@ -235,28 +200,6 @@ auto-fire trigger**, **body = the recipe**.
 Add a GET /api/activities/[id]/reviews endpoint that returns the activity's rating,
 reviewsCount, and tags.
 ```
-
-✅ **Expected:** Claude loads `new-api-route` on its own and produces a route with the
-same JSDoc/params/404 conventions. 🔍 **Verify:** `npx tsc --noEmit` + curl.
-
-🗣 **Talking points:**
-
-- "Code generation = generating to **established conventions**." (Slide 10)
-- The two existing JSDoc'd routes are the **golden examples** — "follow this" beats prose. (Slide 16)
-- A skill is **frontmatter (the trigger) + body (the recipe)** — a reusable prompt that lives in the repo and ships to the team. (Slide 11)
-- The lesson: **skill = automatic** (Claude fired it from the description), **slash command = explicit** (you typed `/update-docs`). Control vs consistency. (Slide 11)
-
-⚠️ **Fallback:** if the live build or auto-fire misbehaves, copy the reference skill into
-place and continue:
-
-```bash
-mkdir -p .claude/skills/new-api-route
-cp docs/demo-assets/new-api-route.SKILL.md .claude/skills/new-api-route/SKILL.md
-```
-
-If you'd rather show something visual instead of the second endpoint, generate a
-`CancellationPolicy` card following the `src/components/detail/*` pattern.
-
 ---
 
 ## Segment 4 — Bug Fix
@@ -273,30 +216,13 @@ If you'd rather show something visual instead of the second endpoint, generate a
 💬 **Prompt — structured bug report (Slide 32 format):**
 ```
 Bug: after confirming a booking, the success message always says "June 12" even when
-the guest booked June 13.
+the guest booked June 17.
 - Symptom: chat success bubble shows the wrong date.
 - Affected file: src/components/DetailView.tsx, executeConfirmBooking (~line 178).
-- Repro: open an activity, pick a June 13 slot, confirm, read the success message.
+- Repro: open an activity, pick a June 17 slot, confirm, read the success message.
 First write a failing test that proves the bug (the success message should contain the
 booked date), confirm it fails, then fix it, then show the test passing.
 ```
-
-✅ **Expected:** Claude writes a test asserting the success message contains
-`newBooking.date`, sees it fail, then replaces the literal `June 12` with
-`${newBooking.date}` (and likely notes the message text is otherwise fine). Test goes green.
-
-🔍 **Verify:** `npm test` — new test passes; in the browser, booking June 13 now reads
-"June 13".
-
-🗣 **Talking points:**
-- "A failing repro test fixes **30% more bugs in 50% fewer steps** — give Claude something concrete to make green." (Slide 32)
-- "Structured report (symptom + file + repro) vs 'it's broken' is the #1 factor in fix quality." (Slide 32)
-- Bug fixing is **context‑heavy**, not just code‑gen — Claude reads the surrounding flow first. (Slide 30)
-- The **two‑attempt rule**: if it's stuck after two tries, change approach. (Slide 32)
-
-⚠️ **Fallback:** the fix is a one‑line string change — if the test harness fights you,
-make the fix directly and show the browser, then circle back to the test in Segment 5.
-
 ---
 
 ## Segment 5 — Test Generation
@@ -316,23 +242,6 @@ the corrupt-JSON fallback) and the rule-based booking parser in the /api/chat fa
 For each gap: explain why it matters, then write tests that MATCH the style of
 src/lib/__tests__/pricing.test.ts. Verify they pass.
 ```
-
-✅ **Expected:** Claude reports coverage, then adds e.g.
-`src/hooks/__tests__/useBookings.test.ts` (using `@testing-library/react`'s
-`renderHook`, jsdom localStorage) and a parser test, mirroring the golden test's
-describe/it/edge‑case shape. All green.
-
-🔍 **Verify:** `npm run test:coverage` — coverage on the targeted files jumps; suite passes.
-
-🗣 **Talking points:**
-- "Highest ROI, lowest adoption. 40% → 80% on a service layer in 30 minutes." (Slide 27/28)
-- "**Reference existing patterns** — that's what makes generated tests match what the team already agreed looks good." (Slide 28)
-- "List edge cases **in the prompt** — empty, null, boundary, FULL, over‑capacity — or Claude over‑tests happy paths." (Slide 29)
-- Know the limits: great at regression/edge cases, weak at exploratory & threat modeling. (Slide 29)
-
-⚠️ **Fallback:** if hook testing in jsdom gets fiddly, pivot to the **pure parser**
-(extracted in Segment 6) — pure functions are the easiest, most reliable tests to show.
-
 ---
 
 ## Segment 6 — Refactoring
@@ -358,22 +267,6 @@ Implement option <N> incrementally: extract a pure parseBookingIntent() into
 src/lib/, point both call sites at it, and run `npm test` after each step. Keep
 behaviour unchanged.
 ```
-
-✅ **Expected:** Claude proposes options (e.g. shared `src/lib/bookingParser.ts`),
-you pick one, it extracts a pure function, rewires both fallbacks, and runs tests
-between steps. The Segment‑5 parser tests now cover the extracted unit.
-
-🔍 **Verify:** `npm test` green after each step; `npx tsc --noEmit` passes; app still books.
-
-🗣 **Talking points:**
-- "Describe the **problem**, not the solution — 'reduce this coupling', not 'extract an interface'." (Slide 24)
-- "**Run tests first** (we have them now from Segments 4–5), then refactor in small tested steps." (Slide 25) — this is *why* tests came before refactor.
-- "'Don't change code yet' keeps Claude in planning mode." (Slide 25)
-- Defensive‑pattern awareness: tell Claude *why* code exists or it'll 'helpfully' delete it. (Slide 26)
-
-⚠️ **Fallback:** if extraction ripples too far, scope it down: *"Only extract the
-server parser into src/lib and add a unit test; leave the client fallback for a follow‑up."*
-
 ---
 
 ## Segment 7 — Git & Pull Request
@@ -394,201 +287,4 @@ each (docs, the new endpoint, the bug fix, the tests, the refactor). Subject und
 Create a PR description with sections: Summary, What changed (grouped), How to test,
 Screens affected. Derive it from the commits/diff. Then create it with `gh pr create`.
 ```
-
-✅ **Expected:** a tidy commit series (`docs:`, `feat:`, `fix:`, `test:`, `refactor:`),
-then a structured PR body and a `gh pr create` command.
-
-🔍 **Verify:** `git log --oneline` reads like the pipeline; PR opens with the template filled.
-
-🗣 **Talking points:**
-- "Define your commit convention in CLAUDE.md — quality is consistent when the format is explicit." (Slide 40)
-- "'Show me first' on every Git op — review before commit, review before push." (Slide 39)
-- Mention **worktrees** for parallel agents even if you don't demo them. (Slide 38)
-- Land the close: *"Bug report → fix → tests → refactor → commit → PR. One session. That's the whole point."* (Slide 42)
-
-⚠️ **Fallback:** no GitHub remote? Stop at the commit series + `git log --graph` and
-*describe* the `gh pr create` step. (The demo doesn't push — `git push` is denied in
-`.claude/settings.json`.)
-
 ---
-
-## 8. Timing card (print this)
-
-| Min | Segment |
-|---|---|
-| 0:00 | Intro: "you just joined this repo" |
-| 0:02 | 1 — Discovery + diagrams |
-| 0:07 | 2 — Update docs |
-| 0:12 | 3 — Code generation |
-| 0:17 | 4 — Bug fix |
-| 0:23 | 5 — Test generation |
-| 0:28 | 6 — Refactor |
-| 0:35 | 7 — Git + PR |
-| 0:39 | Recap on Slide 42 |
-
-If you're short on time, the **droppable** segments are 1 (show pre‑made diagrams) and
-3 (describe instead of build). The **core seven‑slide pipeline** is 4→5→6→7.
-
----
-
-## 9. Prompting cheat‑sheet (Slide 4, keep visible)
-
-1. **Goal + constraint, not solution.** ✗ "Refactor this." ✓ "Reduce coupling between the two fallback parsers."
-2. **Scope it.** Which file, which function, which edge case.
-3. **Reference existing patterns.** "Follow `src/lib/pricing.ts`."
-4. **Give a verification path.** A test to pass, a build to check, a curl to run.
-
-Pitfalls to avoid on stage (Slide 5): vague prompts · skipping Plan Mode · refactoring
-without tests · accepting code unreviewed · overloading one session · empty CLAUDE.md ·
-auto‑accepting every permission.
-
----
-
-## 10. Appendix A — Reference diagrams (answer key)
-
-Use these if a live generation goes sideways. They're accurate to the current code.
-
-**Data flow — AI booking chat:**
-
-```mermaid
-sequenceDiagram
-    actor Guest
-    participant DV as DetailView
-    participant API as POST /api/chat
-    participant Gem as Gemini 2.5-flash
-    participant FB as Rule-based fallback
-    participant HK as useBookings
-    participant LS as localStorage
-
-    Guest->>DV: type message / click slot
-    DV->>API: { messages, activityContext, systemTime }
-    alt GEMINI_API_KEY set
-        API->>Gem: generateContent(systemInstruction, schema)
-        Gem-->>API: { reply, bookingAttempt }
-    else missing key or API error
-        API->>FB: parse last message (date/time/people)
-        FB-->>API: { reply, bookingAttempt }
-    end
-    API-->>DV: { reply, bookingAttempt }
-    DV->>DV: render reply; if bookingAttempt -> BookingConfirmCard
-    Guest->>DV: click "Confirm Booking"
-    DV->>HK: onAddBooking(newBooking)
-    HK->>LS: persist shoreline_bookings_v1
-    DV-->>Guest: success message (the Segment-4 bug lives here)
-```
-
-**Component hierarchy:**
-
-```mermaid
-flowchart TD
-    L[RootLayout] --> NB[NavBar]
-    L --> M[main = routed page]
-    L --> FT[Footer]
-
-    M --> H["/ HomePage"]
-    M --> A["/activities/[id] ActivityPage"]
-    M --> B["/bookings BookingsPage"]
-
-    H --> LV[ListingView]
-    LV --> HS[HeroSection]
-    LV --> FB2[FilterBar]
-    LV --> AC["ActivityCard (xN)"]
-    LV --> EAS[EmptyActivitiesState]
-
-    A --> DV[DetailView]
-    DV --> AS[ActivitySpecs]
-    DV --> AVS[AvailabilitySlots]
-    DV --> AIP[AIAssistantPanel]
-    AIP --> CMB["ChatMessageBubble (xN)"]
-    AIP --> BCC[BookingConfirmCard]
-
-    B --> BV[BookingsView]
-    BV --> BC["BookingCard (xN)"]
-    BV --> EBS[EmptyBookingsState]
-
-    A -. useBookings hook .-> HK[(localStorage)]
-    B -. useBookings hook .-> HK
-```
-
-**CLAUDE.md answer‑key (what "correct" looks like after Segment 2):**
-- Stack: **Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v4**
-- Entry: `src/app/layout.tsx` + route folders under `src/app/`
-- Routes: `GET /api/health`, `GET /api/activities`, `GET /api/activities/[id]`, `POST /api/chat`
-- AI: `@google/genai`, model **`gemini-2.5-flash`**, rule‑based fallback when `GEMINI_API_KEY` is absent
-- State: bookings persist to `localStorage` (`shoreline_bookings_v1`) via `useBookings`
-- Commands: `npm run dev | build | start | lint | test`
-
----
-
-## 11. Seed map — what's intentionally "wrong"
-
-> Leave these as‑is on `demo/start`. They are the live demo material.
-
-| Seed | Location | Used in |
-|---|---|---|
-| Stale CLAUDE.md (Express/Vite, `gemini-3.5-flash`, `App.tsx`) | [CLAUDE.md](../CLAUDE.md) | Segment 2 |
-| Boilerplate README (AI Studio) | [README.md](../README.md) | Segment 2 |
-| Hardcoded "June 12" success message | [DetailView.tsx:178](../src/components/DetailView.tsx#L178) | Segment 4 |
-| Duplicated rule‑based parser | [route.ts](../src/app/api/chat/route.ts#L140) + [DetailView.tsx:91](../src/components/DetailView.tsx#L91) | Segment 6 |
-| No tests on `useBookings` / chat parser | [useBookings.ts](../src/hooks/useBookings.ts), [route.ts](../src/app/api/chat/route.ts) | Segment 5 |
-
-**Not seeds (real, leave alone):** `src/lib/pricing.ts` + its test are the *golden*
-reference; `.claude/` config and Jest setup are real pre‑staging.
-
-**Built live, not seeded:** the `new-api-route` skill is created on stage in Segment 3,
-so `.claude/skills/` is empty on `demo/start`. The finished copy lives at
-[docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) (also in
-[§13](#13-appendix-b--new-api-route-skill-answer-key)). `demo-reset.sh` removes the
-live‑built skill since it's untracked.
-
----
-
-## 12. Reset & recovery
-
-```bash
-bash scripts/demo-reset.sh        # back to demo/start, edits discarded
-# or manually:
-git restore --staged . && git checkout -- . && git switch demo/start
-```
-
-If you accidentally close the terminal mid‑session: `claude --continue` resumes where
-you left off (Slide 7).
-
----
-
-## 13. Appendix B — `new-api-route` skill (answer key)
-
-This is the finished skill the presenter builds live in Segment 3 — committed at
-[docs/demo-assets/new-api-route.SKILL.md](demo-assets/new-api-route.SKILL.md) as the
-reference and paste‑in fallback. In the live build, Claude should produce something
-very close to this.
-
-````markdown
----
-name: new-api-route
-description: >-
-  Scaffold a new Next.js App Router API route under src/app/api. Use this
-  whenever the user asks to add, create, generate, or build an API
-  endpoint/route in this project. Produces a route handler that matches the
-  codebase conventions — a JSDoc header documenting the response shapes, typed
-  dynamic params (Promise<{ ... }>), NextResponse.json responses, and the
-  consistent { error } 404 shape — modeled on
-  src/app/api/activities/[id]/route.ts.
----
-
-# New API Route
-
-Generate a Next.js App Router route handler indistinguishable in style from the
-existing routes. Match the golden examples — do not invent a new structure.
-
-- Golden examples: src/app/api/activities/[id]/route.ts (single + 404),
-  src/app/api/activities/route.ts (collection + query filter)
-- Conventions: file at src/app/api/<segments>/route.ts; import NextRequest,
-  NextResponse + data from @/data/activities; JSDoc header; await
-  context.params (typed as a Promise); NextResponse.json with { data } /
-  { data, total }; 404 as { error } + { status: 404 }; no new deps.
-- After generating: npx tsc --noEmit, then a happy-path and a 404 curl.
-````
-
-> The two parts to point at on stage: the **`description`** (the auto-fire trigger Claude
-> matches against) and the **body** (the recipe). That's the whole anatomy of a skill.

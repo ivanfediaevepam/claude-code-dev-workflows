@@ -11,7 +11,7 @@ code, not assumptions.
 
 Review the changes in the last **${1:-5}** commits:
 
-!`git log --oneline -n ${1:-5}`
+!`git log --oneline -n 5`
 
 ## Steps
 
