@@ -1,20 +1,41 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Shoreline
 
-# Run and deploy your AI Studio app
+Shoreline is an AI-powered activity booking app. Users browse coastal activities,
+chat with a Gemini-backed assistant to ask questions and book slots, and review
+their bookings history.
 
-This contains everything you need to run your app locally.
+## Prerequisites
 
-View your app in AI Studio: https://ai.studio/apps/926527f1-f2b8-44d0-bc3f-7bf66b4b2a12
+- Node.js 18+
+- A Gemini API key (optional — app falls back to a rule-based parser without one)
 
-## Run Locally
+## Setup
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+cp .env.example .env.local   # then fill in GEMINI_API_KEY and APP_URL
+npm run dev                  # http://localhost:3000
+```
 
+## Environment Variables
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+|Variable|Required|Description|
+|---|---|---|
+|`GEMINI_API_KEY`|No|Gemini API key. Falls back to rule-based chat if absent.|
+|`APP_URL`|No|Hosted URL (used for self-referential links and OAuth callbacks).|
+
+## API Endpoints
+
+|Method|Path|Description|
+|---|---|---|
+|GET|`/api/health`|Liveness check|
+|GET|`/api/activities`|List all activities|
+|GET|`/api/activities/[id]`|Get a single activity|
+|POST|`/api/chat`|AI chat — returns `{ reply, bookingAttempt }`|
+
+## Testing
+
+```bash
+npm test                 # run all tests
+npm run test:coverage    # with coverage report
+```
