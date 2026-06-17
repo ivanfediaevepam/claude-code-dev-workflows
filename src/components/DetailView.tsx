@@ -176,7 +176,7 @@ export default function DetailView({ activity, onGoBack, onAddBooking }: DetailV
       {
         id: `msg-sys-success-${Date.now()}`,
         sender: "assistant",
-        text: `🎉 Congratulations! Your reservation for June 12 was successfully registered under Booking ID ${newBooking.id}! You are fully set up for the beach. Feel free to view your bookings in the header tab.`,
+        text: `🎉 Congratulations! Your reservation for ${newBooking.date} was successfully registered under Booking ID ${newBooking.id}! You are fully set up for the beach. Feel free to view your bookings in the header tab.`,
         timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
       }
     ]);
