@@ -44,6 +44,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # ──────────────────────────────────────────────
+# MCP configuration (may contain credentials)
+# ──────────────────────────────────────────────
+.mcp.json
+
+# ──────────────────────────────────────────────
 # Misc project files not needed in the repo
 # ──────────────────────────────────────────────
 *.pdf
+masterclasses/
