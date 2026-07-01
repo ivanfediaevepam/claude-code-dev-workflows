@@ -1,0 +1,23 @@
+{
+  "skill_name": "test-case-from-template",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write test cases for the user login feature. Users can log in with email and password. There's a 'Remember me' checkbox and a 'Forgot password' link. After 5 failed attempts the account gets locked.",
+      "expected_output": "A set of test cases in the exact TC-<id> template format covering happy path (successful login), edge cases (remember me, already logged in), and error cases (wrong password, locked account). Each case must have Feature, Precondition, Steps, Expected, and Type fields.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can you cover the booking confirmation flow? The user picks an activity, selects a date/time slot, fills in participant count, and confirms. The system should show a summary before final confirmation and send an email after.",
+      "expected_output": "Test cases following the template for the booking confirmation flow — at minimum a happy path, an edge case (e.g. last available slot, max participants), and an error case (e.g. slot becomes unavailable between selection and confirm).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "add test scenarios for the activity search/filter — users can filter by category, price range, and date. Results update live as filters change. Clearing filters restores the full list.",
+      "expected_output": "Test cases in template format covering successful filtering combinations, edge cases like no results matching filters, and error/boundary cases like invalid price range input.",
+      "files": []
+    }
+  ]
+}

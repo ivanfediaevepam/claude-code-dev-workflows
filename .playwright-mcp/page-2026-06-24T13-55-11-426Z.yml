@@ -1,0 +1,119 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Shoreline" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e9]: Shoreline
+      - generic [ref=e10]:
+        - link "Activities" [ref=e11] [cursor=pointer]:
+          - /url: /
+          - img [ref=e12]
+          - generic [ref=e15]: Activities
+        - link "My bookings 1" [ref=e16] [cursor=pointer]:
+          - /url: /bookings
+          - img [ref=e17]
+          - generic [ref=e19]: My bookings
+          - generic [ref=e20]: "1"
+      - link "View my account" [ref=e22] [cursor=pointer]:
+        - /url: /bookings
+        - img [ref=e23]
+  - main [ref=e26]:
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - button "Back to activities" [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+          - generic [ref=e33]: Back to activities
+        - button [ref=e34] [cursor=pointer]:
+          - img [ref=e35]
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - img "Beginner Surf Lesson" [ref=e40]
+            - generic [ref=e41]:
+              - img [ref=e42]
+              - generic [ref=e44]: 4.9 (128)
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e47]: Water Sports
+              - generic [ref=e48]: Beginner Friendly
+            - heading "Beginner Surf Lesson" [level=1] [ref=e49]
+            - paragraph [ref=e50]: Master the waves with our expert instructors. Perfect for first-timers! Experience the thrill of standing on a board in a safe, supportive environment along our beautiful wave break.
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - img [ref=e54]
+                - generic [ref=e57]: Duration
+              - generic [ref=e58]: 2 Hours
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - img [ref=e61]
+                - generic [ref=e64]: Price
+              - generic [ref=e65]: €45 / person
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - img [ref=e68]
+                - generic [ref=e73]: Group Size
+              - generic [ref=e74]: Max 6 people
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - heading "Upcoming Availability" [level=2] [ref=e77]
+              - generic [ref=e78]: Click a slot to book via AI chat
+            - generic [ref=e79]:
+              - button "June 12 10:00 AM - 12:00 PM 4 spots left" [ref=e80] [cursor=pointer]:
+                - generic [ref=e81]:
+                  - generic [ref=e82]: June 12
+                  - generic [ref=e83]: 10:00 AM - 12:00 PM
+                - generic [ref=e85]: 4 spots left
+              - button "June 12 2:00 PM - 4:00 PM Full" [disabled] [ref=e86]:
+                - generic [ref=e87]:
+                  - generic [ref=e88]: June 12
+                  - generic [ref=e89]: 2:00 PM - 4:00 PM
+                - generic [ref=e90]: Full
+              - button "June 13 10:00 AM - 12:00 PM 6 spots left" [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]:
+                  - generic [ref=e93]: June 13
+                  - generic [ref=e94]: 10:00 AM - 12:00 PM
+                - generic [ref=e96]: 6 spots left
+        - generic [ref=e98]:
+          - generic [ref=e99]:
+            - img [ref=e102]
+            - generic [ref=e106]:
+              - heading "AI Booking Assistant" [level=3] [ref=e107]
+              - paragraph [ref=e108]: Online
+          - generic [ref=e111]:
+            - img [ref=e113]
+            - generic [ref=e116]: Hi! I'm your Shoreline assistant. I can help you secure your spot for the Beginner Surf Lesson. Which date and time would you like to book, and for how many people?
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - textbox "E.g., June 12 at 10 AM for 2 people..." [ref=e119]
+              - button [disabled] [ref=e120] [cursor=pointer]:
+                - img [ref=e121]
+            - generic [ref=e124]: AI may produce inaccurate information about real-time availability.
+  - contentinfo [ref=e125]:
+    - generic [ref=e126]:
+      - generic [ref=e127]: Shoreline
+      - generic [ref=e128]:
+        - link "Explore" [ref=e129] [cursor=pointer]:
+          - /url: /
+        - link "My Bookings" [ref=e130] [cursor=pointer]:
+          - /url: /bookings
+        - link "Privacy Policy" [ref=e131] [cursor=pointer]:
+          - /url: "#"
+        - link "Terms of Service" [ref=e132] [cursor=pointer]:
+          - /url: "#"
+        - link "Contact Us" [ref=e133] [cursor=pointer]:
+          - /url: "#"
+      - paragraph [ref=e134]: © 2026 Shoreline. All rights reserved. Registered beach activities.
+  - generic [ref=e139] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e140]:
+      - img [ref=e141]
+    - generic [ref=e144]:
+      - button "Open issues overlay" [ref=e145]:
+        - generic [ref=e146]:
+          - generic [ref=e147]: "0"
+          - generic [ref=e148]: "1"
+        - generic [ref=e149]: Issue
+      - button "Collapse issues badge" [ref=e150]:
+        - img [ref=e151]
+  - alert [ref=e153]
