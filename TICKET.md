@@ -195,3 +195,37 @@ Date filtering: ISO string → `new Date()` → `"June 12"` format → matches a
 - `GET /api/activities?date=2026-06-12` returns activities with available slots on that date
 - `GET /api/activities/beginner-surf` returns full data including slots
 - `GET /api/activities/unknown-id` returns `404`
+
+---
+
+### CAMC-24 · Harden `POST /api/chat` (Input Validation & Rate Limiting)
+
+| Field | Value |
+| --- | --- |
+| **Type** | Technical Debt / Non-Functional |
+| **Priority** | High |
+| **Status** | 🔲 To Do |
+| **Assignee** | Ivan Fediaev |
+| **Sprint** | CAMC Sprint 1 |
+| **Labels** | `api` · `security` · `hardening` · `nfr` |
+
+---
+
+**User Story**
+
+As an operator of the Shoreline app, I want the `POST /api/chat` endpoint to reject malformed payloads and throttle abusive clients, so that the Gemini API quota and the server are not exhausted by buggy or hostile callers.
+
+**Background / Context**
+
+`POST /api/chat` currently accepts a request body (`{ messages, activityContext, systemTime }`), forwards it to Gemini, and falls back to the rule-based parser when `GEMINI_API_KEY` is absent or the Gemini call fails (CAMC-13, CAMC-14). Today the handler trusts the request body as-is and applies no rate limiting. A malformed payload or a rapid burst of requests can trigger runtime errors or burn through the Gemini quota. This ticket hardens the endpoint without changing its happy-path behaviour or the UI.
+
+**Acceptance Criteria**
+
+- [ ] **AC1 — Happy path unchanged.** A well-formed request (`{ messages, activityContext, systemTime }`) returns the same `{ reply, bookingAttempt }` response as today.
+- [ ] **AC2 — Malformed body rejected.** A body that is not valid JSON, is missing `messages`, has `messages` that is not an array, or contains a message missing required fields returns **400** with a consistent `{ error: { code, message } }` body.
+- [ ] **AC3 — Oversized input rejected.** A request exceeding the message-count limit, or containing a message whose text exceeds the per-message character limit, is rejected with a clear error. *(Limits: see Open Questions.)*
+- [ ] **AC4 — Rate limiting.** A client exceeding the allowed request rate receives **429** with a `Retry-After` header. *(Threshold/window: see Open Questions.)*
+- [ ] **AC5 — Per-client isolation.** Rate-limit state is tracked per client and never leaks across clients; one client hitting the limit does not throttle another.
+- [ ] **AC6 — Safe, uniform errors.** All error responses share the same `{ error: { code, message } }` shape and never expose stack traces or internal details.
+- [ ] **AC7 — Fallback preserved.** Existing fallback behaviour (no `GEMINI_API_KEY`, or Gemini failure) continues to work unchanged and is subject to the same protections.
+- [ ] **AC8 — No UI change, no new dependency.** No change to any client component; no new npm dependency unless explicitly justified.
